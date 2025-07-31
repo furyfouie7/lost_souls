@@ -570,7 +570,7 @@
 
   <script>
     // Load sidebar user list
-    fetch("http://localhost:5000/users")
+    fetch("https://lost-souls-backend.onrender.com/users")
       .then(res => res.json())
       .then(users => {
         const list = document.getElementById("userList");
@@ -593,7 +593,7 @@
     // Load announcements
     async function loadAnnouncements() {
       try {
-        const response = await fetch("http://localhost:5000/announcements");
+        const response = await fetch("https://lost-souls-backend.onrender.com/announcements");
         const announcements = await response.json();
         
         document.getElementById("loading").style.display = "none";
