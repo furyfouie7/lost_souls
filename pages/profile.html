@@ -510,7 +510,7 @@
         document.getElementById("gmail").innerText = data.gmail || 'No Digital Trace';
         document.getElementById("phone").innerText = data.phone || 'Silent Channel';
         
-        const photoUrl = `http://localhost:5000/profile_photo/${codename}?t=${Date.now()}`;
+        const photoUrl = `https://lost-souls-backend.onrender.com/profile_photo/${codename}?t=${Date.now()}`;
         document.getElementById("profilePhoto").src = photoUrl;
       })
       .catch(error => {
