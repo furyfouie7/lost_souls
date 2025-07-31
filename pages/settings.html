@@ -84,7 +84,7 @@
     }
 
     // Load current user data
-    fetch("http://localhost:5000/profile/" + codename)
+    fetch("https://lost-souls-backend.onrender.com/profile/" + codename)
       .then(res => res.json())
       .then(data => {
         currentUserData = data;
@@ -149,7 +149,7 @@
             formData.append("photo", selectedPhoto);
             formData.append("codename", codename);
             
-            const photoRes = await fetch("http://localhost:5000/upload_photo", {
+            const photoRes = await fetch("https://lost-souls-backend.onrender.com/upload_photo", {
               method: "POST",
               body: formData
             });
@@ -181,7 +181,7 @@
           formData.currentPassword = currentPassword;
         }
         
-        const response = await fetch("http://localhost:5000/update_profile", {
+        const response = await fetch("https://lost-souls-backend.onrender.com/update_profile", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
