@@ -475,7 +475,7 @@
 
   <script>
     // Load sidebar user list with images
-    fetch("http://localhost:5000/users")
+    fetch("https://lost-souls-backend.onrender.com/users")
       .then(res => res.json())
       .then(users => {
         const list = document.getElementById("userList");
@@ -501,7 +501,7 @@
     }
 
     // Load user profile data
-    fetch("http://localhost:5000/profile/" + codename)
+    fetch("https://lost-souls-backend.onrender.com/profile/" + codename)
       .then(res => res.json())
       .then(data => {
         document.getElementById("mainName").innerText = `${data.codename}'s Soul Profile`;
