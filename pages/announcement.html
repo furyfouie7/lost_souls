@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Announcements</title>
+  <link rel="stylesheet" href="../assets/header.css">
+  <link rel="stylesheet" href="../assets/sidebar.css">
+  <link rel="stylesheet" href="../assets/profile.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Creepster&family=Nosifer&family=Inter:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap');
+    
+    body {
+      margin: 0;
+      padding: 0;
+      background: radial-gradient(circle at center, #0a0a0a 0%, #000000 50%, #1a0a1a 100%);
+      color: #c0c0c0;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+    
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 20% 80%, rgba(120, 0, 120, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(0, 120, 120, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(120, 120, 0, 0.05) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #0d0d0d 0%, #1a0a1a 50%, #0a0a1a 100%);
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 20px rgba(120, 0, 120, 0.3), 0 0 50px rgba(0, 0, 0, 0.8);
+      border-bottom: 2px solid rgba(120, 0, 120, 0.2);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+    }
+    
+    .header::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #780078, transparent);
+      animation: glow 3s ease-in-out infinite alternate;
+    }
+    
+    @keyframes glow {
+      from { opacity: 0.5; }
+      to { opacity: 1; }
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 28px;
+      color: #d0d0d0;
+      font-family: 'Nosifer', cursive;
+      text-shadow: 0 0 10px #780078, 0 0 20px #780078, 0 0 30px #780078;
+      letter-spacing: 3px;
+    }
+
+    .header-buttons button {
+      background: linear-gradient(45deg, #2a0a2a, #1a0a1a);
+      border: 1px solid #780078;
+      color: #c0c0c0;
+      padding: 10px 18px;
+      margin-left: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 10px rgba(120, 0, 120, 0.3);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .header-buttons button:hover {
+      background: linear-gradient(45deg, #3a0a3a, #2a0a2a);
+      transform: translateY(-2px);
+      box-shadow: 0 0 20px rgba(120, 0, 120, 0.5);
+    }
+
+    .container {
+      display: flex;
+      margin-top: 80px;
+    }
+
+    .sidebar {
+      width: 280px;
+      background: linear-gradient(180deg, rgba(10, 10, 10, 0.9) 0%, rgba(26, 10, 26, 0.9) 100%);
+      padding: 25px;
+      box-shadow: 4px 0 20px rgba(120, 0, 120, 0.2);
+      border-right: 2px solid rgba(120, 0, 120, 0.1);
+      backdrop-filter: blur(10px);
+      height: calc(100vh - 80px);
+      overflow-y: auto;
+    }
+
+    .sidebar h2 {
+      color: #d0d0d0;
+      font-family: 'Inter', sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+      text-align: center;
+      letter-spacing: 1px;
+      text-shadow: 0 0 10px #780078;
+      margin-bottom: 25px;
+    }
+
+    .sidebar-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .sidebar-list li {
+      padding: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: background 0.2s;
+    }
+
+    .sidebar-list li:hover {
+      background: rgba(120, 0, 120, 0.1);
+    }
+
+    .sidebar-list img {
+      width: 40px;
+      height: 40px;
+      object-fit: cover;
+      border-radius: 50%;
+      box-shadow: 0 0 5px rgba(120, 0, 120, 0.5);
+    }
+
+    .sidebar-list div {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-list strong {
+      color: #ffffff;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .sidebar-list small {
+      color: #b0b0b0;
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      font-size: 12px;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 40px;
+      background: linear-gradient(135deg, rgba(10, 10, 10, 0.8) 0%, rgba(26, 10, 26, 0.8) 100%);
+      margin: 25px;
+      border-radius: 15px;
+      box-shadow: 
+        0 0 30px rgba(120, 0, 120, 0.3),
+        inset 0 0 50px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(120, 0, 120, 0.2);
+      backdrop-filter: blur(10px);
+      height: calc(100vh - 80px);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .announcements-feed {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 10px;
+      width: 100%;
+    }
+
+    .announcements-header {
+      color: #d0d0d0;
+      font-family: 'Nosifer', cursive;
+      text-shadow: 0 0 15px #780078, 0 0 30px #780078;
+      margin-bottom: 30px;
+      text-align: center;
+      font-size: 2em;
+      letter-spacing: 3px;
+    }
+
+    .announcements-feed {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .announcement-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(120, 0, 120, 0.2);
+      border-left: 4px solid #780078;
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 25px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(120, 0, 120, 0.1);
+      backdrop-filter: blur(5px);
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .announcement-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(120, 0, 120, 0.3);
+    }
+
+    .announcement-card.important {
+      border-left-color: #ff9800;
+      background: rgba(255, 152, 0, 0.05);
+    }
+
+    .announcement-card.urgent {
+      border-left-color: #f44336;
+      background: rgba(244, 67, 54, 0.05);
+    }
+
+    .announcement-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 15px;
+    }
+
+    .announcement-title {
+      color: #d0d0d0;
+      font-family: 'Inter', sans-serif;
+      font-size: 1.4em;
+      font-weight: 600;
+      margin: 0;
+      text-shadow: 0 0 10px #780078;
+    }
+
+    .announcement-priority {
+      padding: 4px 12px;
+      border-radius: 15px;
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .priority-normal {
+      background: rgba(33, 150, 243, 0.2);
+      color: #2196f3;
+    }
+
+    .priority-important {
+      background: rgba(255, 152, 0, 0.2);
+      color: #ff9800;
+    }
+
+    .priority-urgent {
+      background: rgba(244, 67, 54, 0.2);
+      color: #f44336;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.7; }
+      100% { opacity: 1; }
+    }
+
+    .announcement-content {
+      color: #e0e0e0;
+      line-height: 1.6;
+      margin-bottom: 15px;
+      font-size: 16px;
+    }
+
+    .announcement-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      color: #b0b0b0;
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      border-top: 1px solid rgba(120, 0, 120, 0.1);
+      padding-top: 15px;
+    }
+
+    .announcement-author {
+      font-weight: bold;
+    }
+
+    .announcement-date {
+      opacity: 0.8;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 50px;
+      color: #90caf9;
+      font-size: 18px;
+    }
+
+    .no-announcements {
+      text-align: center;
+      padding: 50px;
+      color: #90caf9;
+      font-size: 18px;
+    }
+
+    .error {
+      background: rgba(244, 67, 54, 0.1);
+      color: #f44336;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+      border: 1px solid rgba(244, 67, 54, 0.3);
+      text-align: center;
+    }
+
+    /* Enhanced Custom Scrollbar for Announcements Feed */
+    .announcements-feed::-webkit-scrollbar {
+      width: 12px;
+    }
+
+    .announcements-feed::-webkit-scrollbar-track {
+      background: linear-gradient(180deg, rgba(10, 10, 10, 0.8) 0%, rgba(26, 10, 26, 0.8) 100%);
+      border-radius: 10px;
+      border: 1px solid rgba(120, 0, 120, 0.1);
+      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .announcements-feed::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #780078 0%, #a000a0 50%, #780078 100%);
+      border-radius: 10px;
+      border: 2px solid rgba(26, 10, 26, 0.8);
+      box-shadow: 
+        0 0 10px rgba(120, 0, 120, 0.5),
+        inset 0 0 5px rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+      animation: scrollbar-glow 3s ease-in-out infinite;
+    }
+
+    .announcements-feed::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(180deg, #a000a0 0%, #c000c0 50%, #a000a0 100%);
+      box-shadow: 
+        0 0 15px rgba(120, 0, 120, 0.8),
+        inset 0 0 8px rgba(255, 255, 255, 0.2);
+      transform: scale(1.1);
+    }
+
+    .announcements-feed::-webkit-scrollbar-thumb:active {
+      background: linear-gradient(180deg, #c000c0 0%, #e000e0 50%, #c000c0 100%);
+      box-shadow: 
+        0 0 20px rgba(120, 0, 120, 1),
+        inset 0 0 10px rgba(255, 255, 255, 0.3);
+    }
+
+    .announcements-feed::-webkit-scrollbar-corner {
+      background: rgba(26, 10, 26, 0.8);
+    }
+
+    /* Animated Glow Effect for Announcements Scrollbar */
+    @keyframes scrollbar-glow {
+      0%, 100% { 
+        box-shadow: 
+          0 0 10px rgba(120, 0, 120, 0.5),
+          inset 0 0 5px rgba(255, 255, 255, 0.1);
+      }
+      50% { 
+        box-shadow: 
+          0 0 20px rgba(120, 0, 120, 0.8),
+          inset 0 0 8px rgba(255, 255, 255, 0.2);
+      }
+    }
+
+    /* Mobile Responsive Design */
+    @media (max-width: 768px) {
+      /* Reduce header height and padding */
+      .header {
+        padding: 10px 15px;
+        height: 60px;
+      }
+      
+      .header h1 {
+        font-size: 20px;
+        letter-spacing: 1px;
+      }
+      
+      .header-buttons button {
+        padding: 8px 12px;
+        font-size: 12px;
+        margin-left: 8px;
+      }
+      
+      /* Hide sidebar on mobile */
+      .sidebar {
+        display: none;
+      }
+      
+      /* Adjust container and main content */
+      .container {
+        margin-top: 60px;
+        flex-direction: column;
+      }
+      
+      .main-content {
+        padding: 20px 15px;
+        width: 100%;
+      }
+      
+      .announcements-header {
+        font-size: 1.5em;
+        margin-bottom: 20px;
+        letter-spacing: 1px;
+      }
+      
+      /* Adjust announcement cards for mobile */
+      .announcement-card {
+        padding: 20px 15px;
+        margin-bottom: 15px;
+      }
+      
+      .announcement-title {
+        font-size: 1.1em;
+        margin-bottom: 10px;
+      }
+      
+      .announcement-content {
+        font-size: 14px;
+        line-height: 1.5;
+      }
+      
+      .announcement-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      
+      .announcement-priority {
+        font-size: 11px;
+        padding: 3px 8px;
+      }
+      
+      .announcement-meta {
+        margin-top: 12px;
+      }
+      
+      .announcement-date {
+        font-size: 11px;
+      }
+    }
+    
+    /* Additional mobile optimization for smaller screens */
+    @media (max-width: 480px) {
+      .header {
+        padding: 8px 10px;
+        height: 55px;
+      }
+      
+      .header h1 {
+        font-size: 18px;
+      }
+      
+      .header-buttons button {
+        padding: 6px 10px;
+        font-size: 11px;
+        margin-left: 6px;
+      }
+      
+      .container {
+        margin-top: 55px;
+      }
+      
+      .main-content {
+        padding: 15px 10px;
+      }
+      
+      .announcements-header {
+        font-size: 1.3em;
+      }
+      
+      .announcement-card {
+        padding: 15px 12px;
+      }
+      
+      .announcement-title {
+        font-size: 1em;
+      }
+      
+      .announcement-content {
+        font-size: 13px;
+      }
+    }
+          /* Make header-buttons wrap and align on small screens */
+    @media (max-width: 768px) {
+      .header h1 {
+        display: none;
+      }
+
+      .header-buttons {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 8px;
+        flex-wrap: nowrap;
+        width: 100%;
+      }
+
+      .header-buttons button {
+        font-size: 12px;
+        padding: 6px 10px;
+        margin-left: 0;
+      }
+    }
+
+
+  </style>  `
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <h1>Lost Soul</h1>
+    <div class="header-buttons">
+      <button onclick="window.location.href='profile.html'">Profile</button>
+      <button onclick="window.location.href='announcement.html'">Announcements</button>
+      <button onclick="logout()">Logout</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <h2>Hokares Souls</h2>
+      <ul class="sidebar-list" id="userList">
+        <!-- Filled dynamically -->
+      </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <h2 class="announcements-header">Soul Announcements</h2>
+      
+      <div class="announcements-feed">
+        <div id="loading" class="loading">Loading announcements...</div>
+        <div id="error" class="error" style="display: none;"></div>
+        <div id="announcementsList"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Load sidebar user list
+    fetch("http://localhost:5000/users")
+      .then(res => res.json())
+      .then(users => {
+        const list = document.getElementById("userList");
+        users.forEach(user => {
+          const li = document.createElement("li");
+          li.innerHTML = `
+            <img src="http://localhost:5000/profile_photo/${user.codename}" alt="PFP" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiMyMTk2ZjMiLz4KPHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDEyQzE0LjIwOTEgMTIgMTYgMTAuMjA5MSAxNiA4QzE2IDUuNzkwODYgMTQuMjA5MSA0IDEyIDRDOS43OTA4NiA0IDggNS43OTA4NiA4IDhDOCAxMC4yMDkxIDkuNzkwODYgMTIgMTIgMTJaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNMTIgMTRDOC42ODYyOSAxNCA2IDE2LjY4NjMgNiAyMFYyMkgxOFYyMEMxOCAxNi42ODYzIDE1LjMxMzcgMTQgMTIgMTRaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4KPC9zdmc+'">
+            <div>
+              <strong>${user.codename}</strong>
+              <small>${user.nickname}</small>
+            </div>
+          `;
+          list.appendChild(li);
+        });
+      })
+      .catch(error => {
+        console.error('Error loading users:', error);
+      });
+
+    // Load announcements
+    async function loadAnnouncements() {
+      try {
+        const response = await fetch("http://localhost:5000/announcements");
+        const announcements = await response.json();
+        
+        document.getElementById("loading").style.display = "none";
+        
+        if (announcements.error) {
+          throw new Error(announcements.error);
+        }
+        
+        const announcementsList = document.getElementById("announcementsList");
+        
+        if (announcements.length === 0) {
+          announcementsList.innerHTML = '<div class="no-announcements">No announcements yet.</div>';
+          return;
+        }
+        
+        announcementsList.innerHTML = announcements.map(announcement => {
+          const date = new Date(announcement.created_at).toLocaleString();
+          const priorityClass = `priority-${announcement.priority}`;
+          const cardClass = announcement.priority !== 'normal' ? announcement.priority : '';
+          
+          let priorityIcon = '';
+          if (announcement.priority === 'important') priorityIcon = '';
+          if (announcement.priority === 'urgent') priorityIcon = '';
+          
+          return `
+            <div class="announcement-card ${cardClass}">
+              <div class="announcement-header">
+                <h3 class="announcement-title">${announcement.title}</h3>
+                <span class="announcement-priority ${priorityClass}">
+                  ${announcement.priority}
+                </span>
+              </div>
+              <div class="announcement-content">${announcement.content}</div>
+              <div class="announcement-meta">
+                <span class="announcement-date">${date}</span>
+              </div>
+            </div>
+          `;
+        }).join('');
+        
+      } catch (error) {
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("error").style.display = "block";
+        document.getElementById("error").textContent = "Error loading announcements: " + error.message;
+      }
+    }
+    
+    function logout() {
+      localStorage.removeItem("codename");
+      localStorage.removeItem("userType");
+      window.location.href = "login.html";
+    }
+    
+    // Load announcements when page loads
+    loadAnnouncements();
+  </script>
+</body>
+</html>

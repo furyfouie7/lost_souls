@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings - Under Dark</title>
+  <link rel="stylesheet" href="../assets/settings.css">
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <h1>Soul Settings</h1>
+    <button class="back-btn" onclick="goBack()">← Back to Profile</button>
+  </div>
+
+  <div class="container">
+    <div class="settings-card">
+      <h2 class="settings-title">Edit Your Profile</h2>
+      
+      <!-- Profile Photo Section -->
+      <div class="profile-photo-section">
+        <img id="profilePhoto" class="profile-photo" src="" alt="Profile Photo">
+        <div class="photo-controls">
+          <div class="file-input-wrapper">
+            <input type="file" id="photoInput" class="file-input" accept="image/*">
+            <div class="file-input-button">Change Photo</div>
+          </div>
+          <button class="remove-photo-btn" onclick="removePhoto()">Remove Photo</button>
+        </div>
+      </div>
+
+      <!-- Settings Form -->
+      <form id="settingsForm" class="settings-form">
+        <div class="form-section">
+          <h3>Personal Information</h3>
+          
+          <div class="form-group">
+            <label for="nickname">Nickname</label>
+            <input type="text" id="nickname" name="nickname" placeholder="Enter your nickname">
+          </div>
+          
+          <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" name="phone" placeholder="Enter your phone number">
+          </div>
+        </div>
+        
+        <div class="form-section">
+          <h3>Account Security</h3>
+          
+          <div class="form-group">
+            <label for="gmail">Email Address</label>
+            <input type="email" id="gmail" name="gmail" placeholder="Enter your email address">
+          </div>
+          
+          <div class="form-group">
+            <label for="currentPassword">Current Password</label>
+            <input type="password" id="currentPassword" name="currentPassword" placeholder="Enter current password to change password">
+          </div>
+          
+          <div class="form-group">
+            <label for="password">New Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter new password (leave blank to keep current)">
+          </div>
+        </div>
+        
+        <div class="save-section">
+          <button type="submit" class="save-btn">Save Changes</button>
+          <div id="message" class="message"></div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let currentUserData = {};
+    let selectedPhoto = null;
+    let photoChanged = false;
+    
+    // Get current user from localStorage
+    const codename = localStorage.getItem("codename");
+    if (!codename) {
+      window.location.href = "login.html";
+    }
+
+    // Load current user data
+    fetch("http://localhost:5000/profile/" + codename)
+      .then(res => res.json())
+      .then(data => {
+        currentUserData = data;
+        
+        // Populate form fields
+        document.getElementById("nickname").value = data.nickname || '';
+        document.getElementById("phone").value = data.phone || '';
+        document.getElementById("gmail").value = data.gmail || '';
+        
+        // Load profile photo
+        const photoUrl = `http://localhost:5000/profile_photo/${codename}?t=${Date.now()}`;
+        document.getElementById("profilePhoto").src = photoUrl;
+      })
+      .catch(error => {
+        console.error('Error loading profile:', error);
+        showMessage('Error loading profile data', 'error');
+      });
+
+    // Photo upload preview
+    document.getElementById("photoInput").addEventListener("change", function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        selectedPhoto = file;
+        photoChanged = true;
+        
+        // Show preview
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById("profilePhoto").src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Remove photo function
+    function removePhoto() {
+      if (confirm('Are you sure you want to remove your profile photo?')) {
+        document.getElementById("profilePhoto").src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9IjEwMCIgY3k9IjEwMCIgcj0iMTAwIiBmaWxsPSIjMjE5NmYzIi8+CjxzdmcgeD0iNzUiIHk9IjUwIiB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDEyQzE0LjIwOTEgMTIgMTYgMTAuMjA5MSAxNiA4QzE2IDUuNzkwODYgMTQuMjA5MSA0IDEyIDRDOS43OTA4NiA0IDggNS43OTA4NiA4IDhDOCAxMC4yMDkxIDkuNzkwODYgMTIgMTIgMTJaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNMTIgMTRDOC42ODYyOSAxNCA2IDE2LjY4NjMgNiAyMFYyMkgxOFYyMEMxOCAxNi42ODYzIDE1LjMxMzcgMTQgMTIgMTRaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4KPC9zdmc+Cjwvc3ZnPgo8L3N2Zz4=';
+        selectedPhoto = 'remove';
+        photoChanged = true;
+      }
+    }
+
+    // Form submission
+    document.getElementById("settingsForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+      
+      const saveBtn = document.querySelector('.save-btn');
+      const originalText = saveBtn.innerHTML;
+      saveBtn.innerHTML = '<div class="loading"></div>Saving...';
+      saveBtn.disabled = true;
+      
+      try {
+        // First, handle photo upload/removal if changed
+        if (photoChanged) {
+          if (selectedPhoto === 'remove') {
+            // Handle photo removal (you might need a backend endpoint for this)
+            showMessage('Photo removal functionality needs backend implementation', 'error');
+          } else if (selectedPhoto) {
+            // Upload new photo
+            const formData = new FormData();
+            formData.append("photo", selectedPhoto);
+            formData.append("codename", codename);
+            
+            const photoRes = await fetch("http://localhost:5000/upload_photo", {
+              method: "POST",
+              body: formData
+            });
+            
+            const photoResult = await photoRes.json();
+            if (!photoResult.filename && photoResult.error) {
+              throw new Error('Photo upload failed: ' + photoResult.error);
+            }
+          }
+        }
+        
+        // Update profile information
+        const formData = {
+          codename: codename,
+          nickname: document.getElementById("nickname").value.trim(),
+          phone: document.getElementById("phone").value.trim(),
+          gmail: document.getElementById("gmail").value.trim()
+        };
+        
+        // Handle password change with current password validation
+        const password = document.getElementById("password").value.trim();
+        const currentPassword = document.getElementById("currentPassword").value.trim();
+        
+        if (password) {
+          if (!currentPassword) {
+            throw new Error('Current password is required to change password');
+          }
+          formData.password = password;
+          formData.currentPassword = currentPassword;
+        }
+        
+        const response = await fetch("http://localhost:5000/update_profile", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(formData)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          showMessage('Profile updated successfully!', 'success');
+          document.getElementById("password").value = ''; // Clear password field
+          document.getElementById("currentPassword").value = ''; // Clear current password field
+          photoChanged = false;
+          selectedPhoto = null;
+          
+          // Refresh photo if it was changed
+          if (photoChanged) {
+            setTimeout(() => {
+              document.getElementById("profilePhoto").src = `http://localhost:5000/profile_photo/${codename}?t=${Date.now()}`;
+            }, 1000);
+          }
+        } else {
+          throw new Error(result.message || 'Update failed');
+        }
+        
+      } catch (error) {
+        console.error('Error updating profile:', error);
+        showMessage('Error: ' + error.message, 'error');
+      } finally {
+        saveBtn.innerHTML = originalText;
+        saveBtn.disabled = false;
+      }
+    });
+
+    function showMessage(text, type) {
+      const messageEl = document.getElementById('message');
+      messageEl.textContent = text;
+      messageEl.className = 'message ' + type;
+      
+      // Hide message after 5 seconds
+      setTimeout(() => {
+        messageEl.style.display = 'none';
+      }, 5000);
+    }
+
+    function goBack() {
+      window.location.href = 'profile.html';
+    }
+  </script>
+</body>
+</html>

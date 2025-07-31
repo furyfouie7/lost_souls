@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Announcement - Admin Panel</title>
+  <link rel="stylesheet" href="../assets/register.css">
+  <style>
+    .announcement-form {
+      max-width: 600px;
+    }
+    
+    .form-group textarea {
+      width: 100%;
+      min-height: 150px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 6px;
+      color: #e0e0e0;
+      font-size: 16px;
+      box-sizing: border-box;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      resize: vertical;
+    }
+    
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #2196f3;
+      box-shadow: 0 0 10px rgba(33, 150, 243, 0.5);
+    }
+    
+    .form-group textarea::placeholder {
+      color: #999;
+    }
+    
+    .priority-select {
+      display: flex;
+      gap: 15px;
+      margin-top: 10px;
+    }
+    
+    .priority-option {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .priority-option input[type="radio"] {
+      margin: 0;
+    }
+    
+    .priority-option label {
+      margin: 0;
+      cursor: pointer;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <h1>📢 Create Announcement</h1>
+    <div class="nav-buttons">
+      <button class="back-btn" onclick="window.location.href='AccountManagement.html'">← Back to Admin</button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div id="accessDenied" class="access-denied" style="display: none;">
+      <h2>🚫 Access Denied</h2>
+      <p>Only administrators can create announcements.</p>
+      <button onclick="window.location.href='login.html'">Go to Login</button>
+    </div>
+
+    <div id="announcementContainer" class="register-container announcement-form">
+      <h2>📝 Create New Announcement</h2>
+      <form id="announcementForm">
+        <div class="form-group">
+          <label for="title">📜 Title:</label>
+          <input type="text" id="title" name="title" placeholder="Enter announcement title" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="content">📝 Content:</label>
+          <textarea id="content" name="content" placeholder="Enter announcement content..." required></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label>🎨 Priority Level:</label>
+          <div class="priority-select">
+            <div class="priority-option">
+              <input type="radio" id="normal" name="priority" value="normal" checked>
+              <label for="normal">📝 Normal</label>
+            </div>
+            <div class="priority-option">
+              <input type="radio" id="important" name="priority" value="important">
+              <label for="important">⚠️ Important</label>
+            </div>
+            <div class="priority-option">
+              <input type="radio" id="urgent" name="priority" value="urgent">
+              <label for="urgent">🚨 Urgent</label>
+            </div>
+          </div>
+        </div>
+        
+        <button type="submit" class="submit-btn">📢 Publish Announcement</button>
+      </form>
+
+      <div id="message"></div>
+    </div>
+  </div>
+
+  <script>
+    // Check if user is admin
+    if (localStorage.getItem("userType") !== "admin") {
+      document.getElementById("announcementContainer").style.display = "none";
+      document.getElementById("accessDenied").style.display = "block";
+    } else {
+      // Admin access granted, set up form submission
+      document.getElementById("announcementForm").addEventListener("submit", async function(e) {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const messageEl = document.getElementById("message");
+
+        const data = {
+          title: formData.get("title"),
+          content: formData.get("content"),
+          priority: formData.get("priority"),
+          author: localStorage.getItem("codename") || "Admin"
+        };
+
+        try {
+          const res = await fetch("http://localhost:5000/announcements", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+          });
+
+          const result = await res.json();
+          
+          // Display message with appropriate styling
+          messageEl.textContent = result.message;
+          messageEl.className = result.success ? "success" : "error";
+          
+          // If successful, clear the form
+          if (result.success) {
+            document.getElementById("announcementForm").reset();
+            
+            // Auto-hide success message after 3 seconds
+            setTimeout(() => {
+              messageEl.style.display = "none";
+            }, 3000);
+          }
+          
+        } catch (error) {
+          messageEl.textContent = "Error: Unable to create announcement. Please try again.";
+          messageEl.className = "error";
+        }
+      });
+    }
+  </script>
+</body>
+</html>

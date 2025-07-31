@@ -1,0 +1,26 @@
+<div class="sidebar">
+  <h2>Users</h2>
+  <ul class="user-list" id="userList">
+    <!-- Filled dynamically -->
+  </ul>
+</div>
+
+<script>
+  fetch("http://localhost:5000/users")
+    .then(res => res.json())
+    .then(users => {
+      const list = document.getElementById("userList");
+      users.forEach(user => {
+        const li = document.createElement("li");
+        li.className = "user-item";
+        li.innerHTML = `
+          <img src="http://localhost:5000/uploads/${user.profile_photo || 'default.png'}" alt="">
+          <div class="user-info">
+            <div class="codename">${user.codename}</div>
+            <div class="nickname">${user.nickname}</div>
+          </div>
+        `;
+        list.appendChild(li);
+      });
+    });
+</script>

@@ -1,0 +1,127 @@
+@import url('https://fonts.googleapis.com/css2?family=Creepster&family=Nosifer&family=Inter:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap');
+
+.sidebar {
+  width: 280px;
+  background: linear-gradient(180deg, rgba(10, 10, 10, 0.9) 0%, rgba(26, 10, 26, 0.9) 100%);
+  color: #c0c0c0;
+  padding: 25px;
+  box-shadow: 4px 0 20px rgba(120, 0, 120, 0.2);
+  height: 100vh;
+  overflow-y: auto;
+  border-right: 2px solid rgba(120, 0, 120, 0.1);
+  backdrop-filter: blur(10px);
+  margin-top: 80px;
+}
+
+.sidebar h2 {
+  margin-bottom: 25px;
+  color: #d0d0d0;
+  font-family: 'Inter', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  letter-spacing: 1px;
+  text-shadow: 0 0 10px #780078;
+}
+
+.user-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.user-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 5px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.02);
+  transition: background 0.2s;
+  border-radius: 6px;
+}
+
+.user-item:hover {
+  background-color: rgba(33, 150, 243, 0.1);
+}
+
+.user-item img {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  object-fit: cover;
+  margin-right: 12px;
+  box-shadow: 0 0 5px rgba(33, 150, 243, 0.3);
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-info .codename {
+  font-weight: bold;
+  color: #ffffff;
+  font-size: 15px;
+}
+
+.user-info .nickname {
+  font-size: 13px;
+  color: #b0bec5;
+}
+
+/* Enhanced Custom Scrollbar for Sidebar */
+.sidebar::-webkit-scrollbar {
+  width: 12px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: linear-gradient(180deg, rgba(10, 10, 10, 0.8) 0%, rgba(26, 10, 26, 0.8) 100%);
+  border-radius: 10px;
+  border: 1px solid rgba(120, 0, 120, 0.1);
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #780078 0%, #a000a0 50%, #780078 100%);
+  border-radius: 10px;
+  border: 2px solid rgba(26, 10, 26, 0.8);
+  box-shadow: 
+    0 0 10px rgba(120, 0, 120, 0.5),
+    inset 0 0 5px rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  animation: scrollbar-glow 3s ease-in-out infinite;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #a000a0 0%, #c000c0 50%, #a000a0 100%);
+  box-shadow: 
+    0 0 15px rgba(120, 0, 120, 0.8),
+    inset 0 0 8px rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+.sidebar::-webkit-scrollbar-thumb:active {
+  background: linear-gradient(180deg, #c000c0 0%, #e000e0 50%, #c000c0 100%);
+  box-shadow: 
+    0 0 20px rgba(120, 0, 120, 1),
+    inset 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.sidebar::-webkit-scrollbar-corner {
+  background: rgba(26, 10, 26, 0.8);
+}
+
+/* Animated Glow Effect */
+@keyframes scrollbar-glow {
+  0%, 100% { 
+    box-shadow: 
+      0 0 10px rgba(120, 0, 120, 0.5),
+      inset 0 0 5px rgba(255, 255, 255, 0.1);
+  }
+  50% { 
+    box-shadow: 
+      0 0 20px rgba(120, 0, 120, 0.8),
+      inset 0 0 8px rgba(255, 255, 255, 0.2);
+  }
+}

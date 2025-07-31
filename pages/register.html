@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register User - Admin Panel</title>
+  <link rel="stylesheet" href="../assets/register.css">
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <h1>👥 Register User</h1>
+    <div class="nav-buttons">
+      <button class="back-btn" onclick="window.location.href='AccountManagement.html'">← Back to Admin</button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div id="accessDenied" class="access-denied" style="display: none;">
+      <h2>🚫 Access Denied</h2>
+      <p>Only administrators can access this page.</p>
+      <button onclick="window.location.href='login.html'">Go to Login</button>
+    </div>
+
+    <div id="registerContainer" class="register-container">
+      <h2>➕ Create New User Account</h2>
+      <form id="registerForm">
+        <div class="form-group">
+          <label for="codename">👤 Codename:</label>
+          <input type="text" id="codename" name="codename" placeholder="Enter unique codename" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="nickname">🏷️ Nickname:</label>
+          <input type="text" id="nickname" name="nickname" placeholder="Enter display nickname" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="fullname">📝 Full Name:</label>
+          <input type="text" id="fullname" name="fullname" placeholder="Enter full legal name" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="password">🔐 Password:</label>
+          <input type="password" id="password" name="password" placeholder="Enter secure password" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="gmail">📧 Gmail:</label>
+          <input type="email" id="gmail" name="gmail" placeholder="Enter email address" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="phone">📱 Phone Number:</label>
+          <input type="text" id="phone" name="phone" placeholder="Enter phone number" required>
+        </div>
+        
+        <button type="submit" class="submit-btn">➕ Create User Account</button>
+      </form>
+
+      <div id="message"></div>
+    </div>
+  </div>
+
+  <script>
+    // Check if user is admin
+    if (localStorage.getItem("userType") !== "admin") {
+      document.getElementById("registerContainer").style.display = "none";
+      document.getElementById("accessDenied").style.display = "block";
+    } else {
+      // Admin access granted, set up form submission
+      document.getElementById("registerForm").addEventListener("submit", async function(e) {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const messageEl = document.getElementById("message");
+
+        const data = {
+          codename: formData.get("codename"),
+          nickname: formData.get("nickname"),
+          fullname: formData.get("fullname"),
+          password: formData.get("password"),
+          gmail: formData.get("gmail"),
+          phone: formData.get("phone"),
+        };
+
+        try {
+          const res = await fetch("http://localhost:5000/register", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+          });
+
+          const result = await res.json();
+          
+          // Display message with appropriate styling
+          messageEl.textContent = result.message;
+          messageEl.className = result.message.includes("successful") ? "success" : "error";
+          
+          // If successful, clear the form
+          if (result.message.includes("successful")) {
+            document.getElementById("registerForm").reset();
+            
+            // Auto-hide success message after 3 seconds
+            setTimeout(() => {
+              messageEl.style.display = "none";
+            }, 3000);
+          }
+          
+        } catch (error) {
+          messageEl.textContent = "Error: Unable to register user. Please try again.";
+          messageEl.className = "error";
+        }
+      });
+    }
+  </script>
+</body>
+</html>
